@@ -76,3 +76,17 @@ module "db" {
   zone_id     = var.zone_id
 }
 
+module "load-balancers" {
+  source = "./modules/loadbalancer"
+
+  for_each = var.load_balancers
+  name = each.key
+  allow_lb_sg_cidr = each.value["allow_lb_sg_cidr"]
+  internal = each.value["internal"]
+  load_balancer_type = each.value["load_balancer_type"]
+  env = var.env
+  vpc_id  = module.vpc.vpc_id
+  subnet_ids      = module.vpc.subnets[each.value["subnet_ref"]]
+
+
+}

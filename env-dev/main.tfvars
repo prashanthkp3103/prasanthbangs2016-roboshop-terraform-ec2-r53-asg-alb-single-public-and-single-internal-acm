@@ -214,6 +214,23 @@ db = {
 
 }
 
+load_balancers = {
+  private = {
+    internal           = true
+    load_balancer_type = "application"
+    allow_lb_sg_cidr = ["10.10.2.0/24", "10.10.3.0/24", "10.10.4.0/24", "10.10.5.0/24"]
+    subnet_ref        = "app"
+
+  }
+  public  = {
+    internal           = false
+    load_balancer_type = "application"
+    allow_lb_sg_cidr = ["0.0.0.0/0"]
+    subnet_ref        = "public"
+
+  }
+}
+
 
 
 

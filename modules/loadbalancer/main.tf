@@ -80,7 +80,7 @@ resource "aws_lb_listener" "public-http" {
 ##
 
 
-resource "aws_lb_listener" "main" {
+resource "aws_lb_listener" "public-https" {
   load_balancer_arn = aws_lb.lb.arn
   port              = "443"
   protocol          = "HTTPS"

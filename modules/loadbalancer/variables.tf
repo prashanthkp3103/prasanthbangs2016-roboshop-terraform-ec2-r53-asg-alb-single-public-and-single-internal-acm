@@ -6,4 +6,7 @@ variable "env" {}
 variable "vpc_id" {}
 variable "subnet_ids" {}
 variable "acm_http_arn" {}
+variable "listener_port" {}
+variable "listener_protocol" {}
+variable "ssl_policy" {}
 

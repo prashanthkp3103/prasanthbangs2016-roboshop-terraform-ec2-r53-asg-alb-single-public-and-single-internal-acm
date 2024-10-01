@@ -88,6 +88,9 @@ module "load-balancers" {
   vpc_id  = module.vpc.vpc_id
   subnet_ids      = module.vpc.subnets[each.value["subnet_ref"]]
   acm_http_arn    = each.value["acm_http_arn"]
+  listener_port      = each.value["listener_port"]
+  listener_protocol  = each.value["listener_protocol"]
+  ssl_policy         = each.value["ssl_policy"]
 
 
 }

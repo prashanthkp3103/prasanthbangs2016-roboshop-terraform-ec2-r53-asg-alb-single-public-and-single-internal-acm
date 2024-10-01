@@ -31,7 +31,7 @@ resource "aws_security_group" "main" {
     cidr_blocks = var.allow_sg_cidr
   }
   tags = {
-    Name = "${var.name}-${var.env}-sg"
+    Name = "${var.name}-${var.env}-asg-sg"
   }
 }
 
@@ -92,7 +92,7 @@ resource "aws_autoscaling_group" "main" {
 resource "aws_lb_target_group" "main" {
   #this lb should be created when asg is created
   #count = var.asg ? 1 : 0  #if var.asg creation is false then 0(create) else 1(dont create)
-  name        = "${var.name}-${var.env}-alb-tg"
+  name        = "${var.name}-${var.env}-tg"
   port        = var.allow_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -110,73 +110,73 @@ resource "aws_lb_target_group" "main" {
 #any request is coming with 80 port sending the traffic to target group
 #creates multiple listeners based asg variable true or false
 #below is for frontend
-resource "aws_lb_listener" "internal-http" {
-  #this lb should be created when asg is created
-  count = var.internal ? 1 : 0  #if var.internal is true then 1(create) else 0(dont create)
-  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  #below is for sending the traffic to lb target groups
-  default_action {
-    type             = "forward"
-    #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
-    target_group_arn = aws_lb_target_group.main.arn
-  }
-}
-
-resource "aws_lb_listener" "public-http" {
-  #this lb should be created when asg is created
-  count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
-  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  #below is for sending the traffic to lb target groups
-  default_action {
-    type             = "redirect"
-    #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
-    redirect {
-      port = "443"
-      protocol = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-}
-
-resource "aws_lb_listener" "public-https" {
-  #this lb should be created when asg is created
-  count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
-  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08" # this default value aws provides
-  certificate_arn   = var.acm_http_arn
-
-  #below is for sending the traffic to lb target groups
-  default_action {
-    type             = "forward"
-    #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
-    target_group_arn = aws_lb_target_group.main.arn
-  }
-}
-
-##
-
-#creates multiple records based asg variable true or false
-#cname is alias name for lb
-#it will create alias names for all the load balancers (internal and external)
-#based on this only frontend gets started
-resource "aws_route53_record" "lb" {
-  #count = var.asg ? 1 : 0 #create if var.asg is true(created) then 1(create) else 0(dont create) - 0 false -1 true
-  zone_id = var.zone_id
-  name    = "${var.name}.${var.env}"
-  type    = "CNAME"
-  ttl     = 10
-  #records = [aws_lb.lb.*.dns_name[count.index]]
-  records = [aws_lb.lb.dns_name]
-}
+# resource "aws_lb_listener" "internal-http" {
+#   #this lb should be created when asg is created
+#   count = var.internal ? 1 : 0  #if var.internal is true then 1(create) else 0(dont create)
+#   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+#   load_balancer_arn = aws_lb.lb.arn
+#   port              = "80"
+#   protocol          = "HTTP"
+#
+#   #below is for sending the traffic to lb target groups
+#   default_action {
+#     type             = "forward"
+#     #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
+#     target_group_arn = aws_lb_target_group.main.arn
+#   }
+# }
+#
+# # resource "aws_lb_listener" "public-http" {
+# #   #this lb should be created when asg is created
+# #   count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
+# #   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+# #   load_balancer_arn = aws_lb.lb.arn
+# #   port              = "80"
+# #   protocol          = "HTTP"
+# #
+# #   #below is for sending the traffic to lb target groups
+# #   default_action {
+# #     type             = "redirect"
+# #     #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
+# #     redirect {
+# #       port = "443"
+# #       protocol = "HTTPS"
+# #       status_code = "HTTP_301"
+# #     }
+# #   }
+# # }
+# #
+# # resource "aws_lb_listener" "public-https" {
+# #   #this lb should be created when asg is created
+# #   count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
+# #   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+# #   load_balancer_arn = aws_lb.lb.arn
+# #   port              = "443"
+# #   protocol          = "HTTPS"
+# #   ssl_policy        = "ELBSecurityPolicy-2016-08" # this default value aws provides
+# #   certificate_arn   = var.acm_http_arn
+# #
+# #   #below is for sending the traffic to lb target groups
+# #   default_action {
+# #     type             = "forward"
+# #     #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
+# #     target_group_arn = aws_lb_target_group.main.arn
+# #   }
+# # }
+# #
+# # ##
+# #
+# # #creates multiple records based asg variable true or false
+# # #cname is alias name for lb
+# # #it will create alias names for all the load balancers (internal and external)
+# # #based on this only frontend gets started
+# # resource "aws_route53_record" "lb" {
+# #   #count = var.asg ? 1 : 0 #create if var.asg is true(created) then 1(create) else 0(dont create) - 0 false -1 true
+# #   zone_id = var.zone_id
+# #   name    = "${var.name}.${var.env}"
+# #   type    = "CNAME"
+# #   ttl     = 10
+# #   #records = [aws_lb.lb.*.dns_name[count.index]]
+# #   records = [aws_lb.lb.dns_name]
+# # }
 

@@ -1,6 +1,6 @@
 resource "aws_security_group" "load-balancer" {
-  name        = "${var.name}-${var.env}-alb-sg"
-  description = "${var.name}-${var.env}-alb-sg"
+  name        = "${var.name}-${var.env}-lb-sg"
+  description = "${var.name}-${var.env}-lb-sg"
   vpc_id      = var.vpc_id
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group" "load-balancer" {
   }
 
   tags = {
-    Name = "${var.name}-${var.env}-alb-sg"
+    Name = "${var.name}-${var.env}-lb-sg"
   }
 }
 

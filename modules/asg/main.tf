@@ -146,26 +146,7 @@ resource "aws_lb_target_group" "main" {
 # #   }
 # # }
 # #
-# # resource "aws_lb_listener" "public-https" {
-# #   #this lb should be created when asg is created
-# #   count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
-# #   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
-# #   load_balancer_arn = aws_lb.lb.arn
-# #   port              = "443"
-# #   protocol          = "HTTPS"
-# #   ssl_policy        = "ELBSecurityPolicy-2016-08" # this default value aws provides
-# #   certificate_arn   = var.acm_http_arn
-# #
-# #   #below is for sending the traffic to lb target groups
-# #   default_action {
-# #     type             = "forward"
-# #     #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
-# #     target_group_arn = aws_lb_target_group.main.arn
-# #   }
-# # }
-# #
-# # ##
-# #
+
 # # #creates multiple records based asg variable true or false
 # # #cname is alias name for lb
 # # #it will create alias names for all the load balancers (internal and external)

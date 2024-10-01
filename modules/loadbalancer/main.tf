@@ -54,6 +54,51 @@ resource "aws_lb" "lb" {
   # #   }
   #
   tags = {
-    Environment = "${var.name}-${var.env}-alb-sg"
+    Environment = "${var.name}-${var.env}-alb-public"
   }
 }
+
+resource "aws_lb_listener" "public-http" {
+  #this lb should be created when asg is created
+  count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
+  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+  load_balancer_arn = aws_lb.lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+##
+
+
+resource "aws_lb_listener" "public-https" {
+  #this lb should be created when asg is created
+  count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
+  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+  load_balancer_arn = aws_lb.lb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08" # this default value aws provides
+  certificate_arn   = var.acm_http_arn
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Configuration error/input is not expected"
+      status_code  = "500"
+    }
+  }
+}
+
+##

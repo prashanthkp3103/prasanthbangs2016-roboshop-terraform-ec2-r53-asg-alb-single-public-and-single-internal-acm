@@ -220,6 +220,7 @@ load_balancers = {
     load_balancer_type = "application"
     allow_lb_sg_cidr = ["10.10.2.0/24", "10.10.3.0/24", "10.10.4.0/24", "10.10.5.0/24"]
     subnet_ref        = "app"
+    acm_http_arn      = null
 
   }
   public  = {
@@ -227,6 +228,7 @@ load_balancers = {
     load_balancer_type = "application"
     allow_lb_sg_cidr = ["0.0.0.0/0"]
     subnet_ref        = "public"
+    acm_http_arn      = "arn:aws:acm:us-east-1:261401039448:certificate/174aed8f-1258-49f5-a8ea-5a6a7be63e3f"
 
   }
 }

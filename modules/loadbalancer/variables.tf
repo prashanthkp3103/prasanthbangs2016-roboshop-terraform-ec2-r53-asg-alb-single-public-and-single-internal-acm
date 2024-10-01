@@ -5,4 +5,5 @@ variable "name" {}
 variable "env" {}
 variable "vpc_id" {}
 variable "subnet_ids" {}
+variable "acm_http_arn" {}
 

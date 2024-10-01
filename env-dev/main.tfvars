@@ -232,7 +232,7 @@ load_balancers = {
     allow_lb_sg_cidr = ["0.0.0.0/0"]
     subnet_ref        = "public"
     acm_http_arn      = "arn:aws:acm:us-east-1:261401039448:certificate/174aed8f-1258-49f5-a8ea-5a6a7be63e3f"
-    listener_port      = "80"
+    listener_port      = "443"
     listener_protocol  = "HTTP"
     ssl_policy         = "ELBSecurityPolicy-2016-08"
 

@@ -80,10 +80,7 @@ resource "aws_lb_listener" "public-http" {
 ##
 
 
-resource "aws_lb_listener" "public-https" {
-  #this lb should be created when asg is created
-  #count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
-  #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+resource "aws_lb_listener" "main" {
   load_balancer_arn = aws_lb.lb.arn
   port              = "443"
   protocol          = "HTTPS"

@@ -20,3 +20,5 @@ variable "lb_subnet_ids" {
 }
 
 variable "dns_name" {}
+variable "listener_arn" {}
+variable "lb_rule_priority" {}

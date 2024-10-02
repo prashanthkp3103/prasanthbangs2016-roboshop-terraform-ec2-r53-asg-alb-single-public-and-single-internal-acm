@@ -38,12 +38,17 @@ resource "aws_security_group" "main" {
 
 #this requires for Auto scaling
 #creates launch template based asg variable true or false
+#this create all the ec2 instances
 resource "aws_launch_template" "main" {
   #count   = var.asg ? 1 : 0  #if var.asg creation is true then 1(create) else 0(dont create)
   name = "${var.name}-${var.env}"
   image_id      = data.aws_ami.ami.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.main.id]
+  #this is to choose spot instance
+  instance_market_options {
+    market_type = "spot"
+  }
 
   user_data   = base64encode(templatefile("${path.module}/userdata.sh", {
     env       = var.env

@@ -49,6 +49,8 @@ module "apps" {
   acm_http_arn      = each.value["acm_http_arn"]
   # it will get public dns and private dns names
   dns_name          = module.load-balancers[each.value["lb_ref"].dns_name]
+  listener_arn = module.load-balancers[each.value["lb_ref"].listener_arn]
+  lb_rule_priority = each.value["lb_rule_priority"]
 
 }
 

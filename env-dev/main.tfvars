@@ -39,12 +39,9 @@ apps = {
       max = 1
       min = 1
     }
-    #this property is for lb (whether it is internal(meaning intranet) or internet=false(meaning it is internet)
-    lb_internal   = false
-    #below public property is output of vpc subnets "public" refer to vpc outputs public it will be subnet ids
-    #and Lb to create under public subnet
-    lb_subnet_ref     = "public"
-    acm_http_arn  = "arn:aws:acm:us-east-1:261401039448:certificate/174aed8f-1258-49f5-a8ea-5a6a7be63e3f"
+    lb_ref           = "public"
+    #acm_http_arn  = "arn:aws:acm:us-east-1:261401039448:certificate/174aed8f-1258-49f5-a8ea-5a6a7be63e3f"
+    lb_rule_priority = 1
 
   }
 
@@ -63,11 +60,8 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
+    lb_ref     = "private"
+    lb_rule_priority = 1
 
   }
 
@@ -85,11 +79,8 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
+    lb_ref     = "private"
+    lb_rule_priority = 2
 
   }
 
@@ -107,11 +98,8 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
+    lb_ref     = "private"
+    lb_rule_priority = 3
 
   }
 
@@ -129,11 +117,8 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
+    lb_ref     = "private"
+    lb_rule_priority = 4
 
   }
 
@@ -151,11 +136,8 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
+    lb_ref     = "private"
+    lb_rule_priority = 5
 
   }
 
@@ -173,13 +155,9 @@ apps = {
       max = 1
       min = 1
     }
-    lb_internal   = true
-    #below app property is output of vpc subnets "app" refer to vpc outputs app it will be subnet ids
-    #and Lb to create under app subnet
-    lb_subnet_ref     = "app"
-    acm_http_arn      = null
-
-  }
+    lb_ref     = "private"
+    lb_rule_priority = 6
+   }
 
 }
 
@@ -233,7 +211,7 @@ load_balancers = {
     subnet_ref        = "public"
     acm_http_arn      = "arn:aws:acm:us-east-1:261401039448:certificate/174aed8f-1258-49f5-a8ea-5a6a7be63e3f"
     listener_port      = "443"
-    listener_protocol  = "HTTP"
+    listener_protocol  = "HTTPS"
     ssl_policy         = "ELBSecurityPolicy-2016-08"
 
   }

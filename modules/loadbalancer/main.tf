@@ -31,11 +31,9 @@ resource "aws_security_group" "load-balancer" {
 }
 
 
-# this creates 2 LB private and public
-#LB properties starts here
-#creating application internal load balancer for each application component
-#creates multiple internal lb based asg variable true or false for backend components
-resource "aws_lb" "lb" {
+# this creates 2 LB private and public -dev based on dev  main.tfvars load-balancer variable internal
+
+resource "aws_lb" "main" {
   #this lb should be created when asg is created
   # count = var.asg ? 1 : 0  #if var.asg is false then 0(create) else 1(dont create) 0-false 1-true
   name               = "${var.name}-${var.env}"
@@ -62,7 +60,7 @@ resource "aws_lb_listener" "public-http" {
   #this lb should be created when asg is created
   count = var.internal ? 0 : 1  #if var.internal is true then 0(dont create) else 1 (create)
   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
-  load_balancer_arn = aws_lb.lb.arn
+  load_balancer_arn = aws_lb.main.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -79,12 +77,14 @@ resource "aws_lb_listener" "public-http" {
 
 ##
 
-
-resource "aws_lb_listener" "public-https" {
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08" # this default value aws provides
+#adding this listener if any host header coming into picture then it has to send to appropriate target group hence this else send default response
+#if someone hits LB url it will give fixed response
+# this listener will be used for internal and provate LB's meaning 1 listener for both internal and public lb
+resource "aws_lb_listener" "main" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = var.listener_port
+  protocol          = var.listener_protocol
+  ssl_policy        = var.ssl_policy # this default value aws provides
   certificate_arn   = var.acm_http_arn
 
   default_action {
@@ -98,4 +98,28 @@ resource "aws_lb_listener" "public-https" {
   }
 }
 
+# resource "aws_lb_listener" "internal-http" {
+#   #this lb should be created when asg is created
+#   count             = var.internal ? 1 : 0  #if var.internal is true then 1(create) else 0(dont create)
+#   #load_balancer_arn = aws_lb.lb.*.arn[count.index]
+#   load_balancer_arn = aws_lb.main.arn
+#   port              = "80"
+#   protocol          = "HTTP"
+#
+#   #below is for sending the traffic to lb target groups
+# #   default_action {
+# #     type = "forward"
+# #     #target_group_arn = aws_lb_target_group.main.*.arn[count.index]
+# #     target_group_arn = aws_lb_target_group.main.arn
+# #   }
+#   default_action {
+#     type = "fixed-response"
+#
+#     fixed_response {
+#       content_type = "text/plain"
+#       message_body = "Configuration error/input is not expected"
+#       status_code  = "500"
+#     }
+#   }
+# }
 ##

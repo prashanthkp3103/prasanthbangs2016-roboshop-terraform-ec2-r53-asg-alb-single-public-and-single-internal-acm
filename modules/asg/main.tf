@@ -86,7 +86,7 @@ resource "aws_autoscaling_group" "main" {
 
 
 
-##
+##This ASG target group to have LB for ASG
 #LB target group - target group will have list of instances
 #created multiple instances would be part of target group
 resource "aws_lb_target_group" "main" {
@@ -104,6 +104,22 @@ resource "aws_lb_target_group" "main" {
     interval = 5 #seconds
     path = "/health"  #path we are checking is /health
     timeout = 3 #i hit /health i will wait for 3sec and say it is healthy or not healthy
+  }
+}
+
+resource "aws_lb_listener_rule" "listener-rule" {
+  listener_arn = var.listener_arn
+  priority     = var.lb_rule_priority
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  condition {
+    host_header {
+      values = [aws_route53_record.lb.fqdn]
+    }
   }
 }
 

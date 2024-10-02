@@ -116,7 +116,7 @@ resource "aws_route53_record" "lb" {
   records = [var.dns_name]
 }
 
-#all the lb cnames will be this listener condition host header and forwarded to Lb target group
+#all the lb cnames will be this listener condition host header and forwarded to ASG target group
 resource "aws_lb_listener_rule" "listener-rule" {
   listener_arn = var.listener_arn
   priority     = var.lb_rule_priority
